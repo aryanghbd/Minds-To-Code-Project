@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 0;
+      }
+      
+      .wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 2px 5px rgba(0,0,0,.1);
+        border-radius: 5px;
+      }
+      
+      button {
+        padding: 10px 20px;
+        border-radius: 5px;
+        border: none;
+        background-color: #333;
+        color: #fff;
+        font-weight: bold;
+        cursor: pointer;
+        margin-right: 10px;
+        transition: background-color .2s ease-in-out;
+      }
+
+      #visualise {
+        background-color: #ff9500;
+      }
+      
+
+      #profile {
+        background-color: #007aff;
+      }
+      
+      h1 {
+        font-size: 32px;
+        color: #333;
+        margin: 40px 0 20px;
+        text-align: center;
+        text-shadow: 1px 1px 0 rgba(255,255,255,.5);
+      }
+      
+      #dimension,
+      #wpm {
+        font-size: 24px;
+        color: #333;
+        margin: 40px 0 20px;
+        text-align: center;
+        text-shadow: 1px 1px 0 rgba(255,255,255,.5);
+      }
+
+      #link {
+        background-color: #bbb;
+        color: #333;
+        transition: background-color .2s ease-in-out;
+      }
+      
+      #link:hover {
+        background-color: #333;
+        color: #fff;
+      }
+      
+      #submit:hover {
+        background-color: #4cd964;
+      }
+      
+      #visualise:hover {
+        background-color: #ff6300;
+      }
+      
+      #profile:hover {
+        background-color: #0046b7;
+      }
+      
+      .error {
+        color: #ff0000;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Coding Behaviour Analysis</h1>
+    <div class="wrapper">
+      <button type="button" id="link">Reset</button>
+      <button type="button" id="submit">Submit Stats</button>
+      <button type="button" id="visualise">Visualise</button>
+      <button type="button" id="profile">Generate Coding Behavioural Profile</button>
+    </div>
+    <p id="dimension"></p>
+    <p id="wpm"></p>
+    <div class="wrapper">
+      <div class="message">
+        <h1>Caution</h1>
+        <p>Analysis of your behavioural and coding metrics requires browser-side information, including but not limited to: Keystroke activity and keycodes, Browser and Device information, Cookies, Tab information external to the active platform. Such information is stored and sanitised anonymously in an external database. By activating and using this extension, you are consenting to the collection and usage of this information.</p>
+      </div>
+    </div>
+    <script src="popup.js"></script>

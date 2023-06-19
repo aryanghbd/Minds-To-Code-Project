@@ -1,0 +1,37 @@
+{
+    "manifest_version": 2,
+    "name": "LeetCode Performance Analysis",
+    "version": "1.0",
+    "description": "Understand your behavioural impact on code quality.",
+
+    "browser_action": {
+        "default_popup": "hello.html",
+        "default_icon": "extension_icon.png"
+    },
+
+    "permissions":[
+        "storage",
+        "activeTab",
+        "tabs",
+        "webNavigation",
+        "<all_urls>"
+    ],
+    "content_security_policy": "script-src 'self' 'unsafe-eval' https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.0.0/dist/tf.min.js https://www.gstatic.com/ https://*.firebaseio.com https://s-euw1b-nss-201.europe-west1.firebasedatabase.app/ https://www.googleapis.com https://s-euw1b-nss-204.europe-west1.firebasedatabase.app/ https://leetcode-performance-analysis-default-rtdb.europe-west1.firebasedatabase.app/ https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js https://s-euw1b-nss-200.europe-west1.firebasedatabase.app/; object-src 'self'",
+    "content_scripts": [
+        {
+            "matches":["http://*/*", "https://*/*"],
+            "js": ["gatherMetrics.js"]
+        }
+    ],
+    "web_accessible_resources": [
+        "radar.html"
+    ],
+    
+
+    "background": {
+        "persistent": false,
+        "page": "background.html",
+        
+        "type": "module"
+    }
+}
