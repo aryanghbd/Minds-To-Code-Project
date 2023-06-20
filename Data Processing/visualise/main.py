@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from bokeh.layouts import column, row
-from bokeh.models import Select, Button, HoverTool, ColumnDataSource
+from bokeh.models import Select, Button, HoverTool, ColumnDataSource, Toggle
 from bokeh.palettes import Spectral5
 from bokeh.plotting import curdoc, figure
 from bokeh.models import SaveTool, Toolbar
@@ -63,6 +63,10 @@ Logic:
     same, then we can simply load the JSON generated without having to perform excessive calculation, this should significantly shave latency. 
 '''
 
+
+'''
+    set initial problem for first load, chose this leetcode problem as this had the most metrics implemented at time of making
+'''
 selected_problem = '5. Longest Palindromic Substring'
 df = pd.DataFrame(userData[selected_problem])
 df_str = df.astype(str)
@@ -77,9 +81,40 @@ N_COLORS = len(COLORS)
 discrete = [x for x in df.columns if df[x].dtype == object]
 continuous = [x for x in df.columns if x not in discrete]
 
+
+'''
+    filter_success(active):
+        -This method allows the user to toggle showing only the datapoints where userData["success_state"] == True. 
+        -Active is active-high, meaning that toggling will change the dataframe we use to display the data.
+        
+        -NOTE: There is a bug when integrating this with the hover tool, Bokkeh does not appear to support objects in hover tool, so unfortunately we must keep
+        everything in int form for now, as preprocessing did not seem to display dimension/non-int data as from Firebase. 
+            -Issue appears to be with source, as we cast to string to display the data but this means that matplotlib/bokkeh is unable to plot the points.
+'''
+
+def filter_success(active):
+    ## Toggle function allows us to display only successful sols or not for clearer distributions
+    global df
+    global source
+    if active:
+        df = df[df["success_state"] == True]
+    else:
+        df = pd.DataFrame(userData[selected_problem])
+    source.data = ColumnDataSource.from_df(df)
+
+
+'''
+    all_axes_combinations():
+        -Generates all possible permutations of metrics for graphing in the grid button.
+'''
 def all_axes_combinations(axes):
     return list(itertools.combinations(axes, 2))
 
+
+'''
+    create_grid():
+        -Tied to grid button on Bokkeh, grabs list of possible permutations and repeatedly calls create_figure() on them.
+'''
 def create_grid():
     ## Generate all permutations of axis combos and then repeatedly call the singular figure function.
     axes_combinations = all_axes_combinations(continuous)
@@ -92,6 +127,12 @@ def create_grid():
 source = ColumnDataSource(df)
 ## To fix hover tool not displaying individual data - note there is a bug where dimensions does not show properly.
 
+
+'''
+    create_figure():
+        -Generates single plot figure, applies matplotlib model to get sum of least squares to choose curve or line.
+        
+'''
 def create_figure(x_axis, y_axis):
     global df
     global userData
@@ -158,6 +199,7 @@ def create_figure(x_axis, y_axis):
                 x_curve = np.linspace(min(xs), max(xs), 100)
                 p.line(x_curve, curve(x_curve), color='red', line_width=2)
         except np.linalg.LinAlgError:
+            ## Ugh, some of the metrics give rank errors on matplotlib, this is a bit ugly but we can just choose not to display certain permutations.
             print(f"Could not fit a trendline for {x_axis} vs {y_axis}")
 
     return p
@@ -168,6 +210,10 @@ def update(attr, old, new):
     selected_problem = problem_select.value
     df = pd.DataFrame.from_dict(userData[selected_problem])
 
+
+'''
+    Toggling between grid display or single graph display.
+'''
 def switch_to_grid():
     layout.children[1] = create_grid()
 
@@ -195,9 +241,12 @@ grid_button.on_click(switch_to_grid)
 single_button = Button(label="Switch to Single View", button_type="primary")
 single_button.on_click(switch_to_single)
 
+success_button = Toggle(label="Toggle Viewing only Successful Submissions", button_type="success", active=False)
+success_button.on_click(filter_success)
 
-controls = column(problem_select, x, y, color, size, grid_button, single_button, width=200)
+controls = column(problem_select, x, y, color, size, grid_button, single_button, success_button, width=200)
 layout = row(controls, create_figure(x.value, y.value))
+
 
 curdoc().add_root(layout)
 curdoc().title = "Minds To Code - Visualiser"
