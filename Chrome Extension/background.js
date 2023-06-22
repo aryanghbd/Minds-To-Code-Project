@@ -16,7 +16,7 @@ useful = ["Stack Overflow", "C++"]
 
 // ChatGPT API credentials
 // const API_ENDPOINT = 'https://api.openai.com/v1/chat/completions';
-const API_KEY = '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';
+const API_KEY = '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';
 
 
 
@@ -142,7 +142,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
               let successState = true;
               //Active low - Assume the submission is completely correct unless we do not have a Performance datapoint, which can only be parsed if the LeetCode submission passed all testcases anyway, if this
               //datapoint doesn't exist we know the submission failed at least 1 testcase and set the value to false.
-              if (!request.data.performance) {
+              if (testcasesPassed != testcasesTotal) {
                   successState = false;
               }
               
@@ -396,7 +396,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
-                  'Authorization': 'Bearer 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'
+                  'Authorization': 'Bearer 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'
                 },
                 
 
